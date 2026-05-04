@@ -152,9 +152,46 @@
       height: clamp(72px, 18vw, 110px);
       border-radius: 50%;
       flex-shrink: 0;
-      overflow: hidden;
+      overflow: visible;
       position: relative;
     }
+
+    .fighter-avatar::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      z-index: -1;
+      animation: spin-ring 3s linear infinite;
+    }
+
+    .fighter-avatar.bjp::before {
+      background: conic-gradient(
+        var(--bjp) 0deg,
+        transparent 60deg,
+        rgba(255,107,0,0.3) 120deg,
+        transparent 180deg,
+        var(--bjp) 240deg,
+        transparent 300deg,
+        var(--bjp) 360deg
+      );
+      filter: blur(4px);
+    }
+
+    .fighter-avatar.tmc::before {
+      background: conic-gradient(
+        var(--tmc) 0deg,
+        transparent 60deg,
+        rgba(33,150,243,0.3) 120deg,
+        transparent 180deg,
+        var(--tmc) 240deg,
+        transparent 300deg,
+        var(--tmc) 360deg
+      );
+      filter: blur(4px);
+    }
+
+    @keyframes spin-ring { to { transform: rotate(360deg); } }
 
     .fighter-avatar img {
       width: 100%;
@@ -164,6 +201,8 @@
       display: block;
       border-radius: 50%;
       transition: transform 0.2s ease;
+      position: relative;
+      z-index: 1;
     }
 
     .fighter-avatar.bjp {
@@ -180,7 +219,7 @@
     .tap-hint {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: rgba(0,0,0,0.55);
+      background: transparent;
       color: #fff;
       font-size: 9px;
       font-weight: 700;
@@ -189,6 +228,7 @@
       letter-spacing: 0.5px;
       border-radius: 0 0 50px 50px;
       pointer-events: none;
+      z-index: 2;
     }
 
     .fighter-avatar.bjp.playing {
@@ -984,7 +1024,7 @@
     <div class="fighter-name bjp">Narendra<br>Modi</div>
     <div class="fighter-party">BJP</div>
     <div class="fighter-seats bjp" id="bjp-seats">—</div>
-    <div class="fighter-label">SEATS WON/LEADING</div>
+    <div class="fighter-label">SEATS LEADING</div>
   </div>
 
   <div class="vs-divider">
@@ -1000,7 +1040,7 @@
     <div class="fighter-name tmc">Mamata<br>Banerjee</div>
     <div class="fighter-party">AITC / TMC</div>
     <div class="fighter-seats tmc" id="tmc-seats">—</div>
-    <div class="fighter-label">SEATS WON/LEADING</div>
+    <div class="fighter-label">SEATS LEADING</div>
   </div>
 </div>
 
@@ -1027,20 +1067,6 @@
   <div class="commentary-inner" id="commentary">Loading commentary...</div>
 </div>
 
-<!-- MAMATA SPOTLIGHT -->
-<div class="mamata-spotlight">
-  <div class="mamata-card">
-    <div class="mamata-icon">👩</div>
-    <div class="mamata-info">
-      <h3>👁️ MAMATA'S OWN SEAT</h3>
-      <div class="mamata-name">MAMATA BANERJEE</div>
-      <div class="mamata-const">Constituency #159 · Bhawanipore</div>
-    </div>
-    <div class="mamata-status">
-      <div class="status-pill na-status" id="mamata-status">⏳ Counting</div>
-    </div>
-  </div>
-</div>
 
 <!-- PARTY TALLY -->
 <div class="section">
@@ -1131,43 +1157,63 @@
   modiAudio.addEventListener('ended', () => modiAvatar.classList.remove('playing'));
   const TOTAL = 294;
 
-  const COMMENTARIES = {
-    bjpLead: [
-      "🦁 Modi ka jaadu! BJP is roaring ahead in Bengal! Amit Shah must be doing bhangra right now! 💃",
-      "🏆 Saffron surge! BJP is leading — TMC might need to rethink its whole strategy! 😅",
-      "📣 Jai Sri Ram echoing in Kolkata? BJP is ahead — this is WILD! 🎉",
-      "🔱 The lotus is blooming in Bengal! Modi wave hitting hard! 🌊"
-    ],
-    tmcLead: [
-      "💪 Didi is NO JOKE! Mamata is flexing harder than a Kolkata morning dumbbell session! 🏋️",
-      "🐯 Khela hobey! And Mamata is winning it! TMC is dominating the scoreboard! 🎯",
-      "👑 Didi says 'Bangla Nijer Meyeke Chay' and Bengal agrees! TMC is ahead! 🌺",
-      "🔥 Mamata is the queen of Bengal! TMC is crushing it — BJP might need a tissue! 😭"
-    ],
-    tied: [
-      "😲 Neck and neck! Tighter than a Kolkata local train at rush hour! 🚂",
-      "🤯 It's TIED! The counting booth must be a warzone right now! ⚔️",
-      "🎭 Who's winning? Nobody knows! More unpredictable than Bengal weather! 🌦️",
-      "🍿 Grab your Jhal Muri — this is going to be a LONG night! 😄"
-    ],
-    counting: [
-      "⏳ Still counting... like your Dadi counting your mistakes at family dinners 😅",
-      "🗳️ Ballots counted faster than WhatsApp forwards during election season! 📲",
-      "🔢 Numbers rolling in! History being written one EVM at a time! 📖"
-    ]
+  const OR_KEY = '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';
+
+  const FALLBACK = {
+    bjpLead:  "🔱 The lotus is blooming in Bengal! Modi wave hitting hard! 🌊",
+    tmcLead:  "🐯 Khela hobey! Mamata is dominating — BJP might need a tissue! 😭",
+    tied:     "😲 Neck and neck! Tighter than a Kolkata local train at rush hour! 🚂",
+    counting: "⏳ Still counting... like your Dadi counting your mistakes at family dinners 😅"
   };
 
   let countdownVal = 30;
   let countdownTimer;
   let prevBjp = -1, prevTmc = -1;
+  let cachedRoast = FALLBACK.counting;
+  let lastRoastState = '';
+  let roastFetching = false;
 
   function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
+  async function fetchRoast(loser, loserSeats, winnerSeats, winner) {
+    if (roastFetching) return;
+    roastFetching = true;
+    const prompt = `West Bengal 2026 elections live count: ${winner} has ${winnerSeats} seats, ${loser} has ${loserSeats} seats. Write ONE brutally savage, funny, short roast (1-2 sentences max) mocking ${loser} for losing so badly. Write it in Hinglish (mix of Hindi and English, like how Indian people text — e.g. "yaar", "bhai", "kya kar raha hai", "toh kya hua", "teri toh", etc). Be ruthless, street-level savage, and hilarious. Use relevant emojis. Only output the roast, nothing else.`;
+    try {
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OR_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'meta-llama/llama-3.3-70b-instruct',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 80
+        })
+      });
+      const data = await res.json();
+      const text = data?.choices?.[0]?.message?.content?.trim();
+      if (text) {
+        cachedRoast = text;
+        document.getElementById('commentary').textContent = text;
+      }
+    } catch(e) { /* keep cached */ }
+    roastFetching = false;
+  }
+
   function getCommentary(bjp, tmc) {
-    if (bjp + tmc < 10) return pick(COMMENTARIES.counting);
+    if (bjp + tmc < 10) return FALLBACK.counting;
     const diff = bjp - tmc;
-    if (Math.abs(diff) <= 5) return pick(COMMENTARIES.tied);
-    return diff > 5 ? pick(COMMENTARIES.bjpLead) : pick(COMMENTARIES.tmcLead);
+    if (Math.abs(diff) <= 5) return FALLBACK.tied;
+
+    const state = diff > 5 ? `bjp-${bjp}-${tmc}` : `tmc-${bjp}-${tmc}`;
+    if (state !== lastRoastState) {
+      lastRoastState = state;
+      if (diff > 5) fetchRoast('TMC', tmc, bjp, 'BJP');
+      else          fetchRoast('BJP', bjp, tmc, 'TMC');
+    }
+    return cachedRoast;
   }
 
   function getPartyClass(party) {
@@ -1221,21 +1267,6 @@
     // Commentary
     document.getElementById('commentary').textContent = getCommentary(bjpCount, tmcCount);
 
-    // Mamata seat 159
-    const ms = seatMap[159];
-    if (ms) {
-      const pill = document.getElementById('mamata-status');
-      if (ms.party === 'AITC') {
-        pill.className = 'status-pill tmc-status';
-        pill.textContent = '✅ TMC Leading';
-      } else if (ms.party === 'BJP') {
-        pill.className = 'status-pill bjp-status';
-        pill.textContent = '⚠️ BJP Leading!';
-      } else {
-        pill.className = 'status-pill na-status';
-        pill.textContent = ms.party === 'NA' ? '⏳ Counting' : ms.party;
-      }
-    }
 
     // Seat grid
     const grid = document.getElementById('seat-grid');
