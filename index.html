@@ -548,6 +548,38 @@
     .party-card-count.bjp { color: var(--bjp); }
     .party-card-count.tmc { color: var(--tmc); }
     .party-card-label { font-size: 10px; color: var(--muted); }
+    .party-card-won {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .won-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .won-chip.bjp { background: rgba(255,107,0,0.25); color: #FF9A4D; border: 1px solid rgba(255,107,0,0.5); }
+    .won-chip.tmc { background: rgba(33,150,243,0.25); color: #64B5F6; border: 1px solid rgba(33,150,243,0.5); }
+    .lead-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
 
     /* ── SEAT GRID ── */
     .seat-grid {
@@ -585,10 +617,12 @@
       }
     }
 
-    .seat-dot.bjp   { background: var(--bjp); }
-    .seat-dot.tmc   { background: var(--tmc); }
-    .seat-dot.other { background: #e693c3; }
-    .seat-dot.na    { background: rgba(255,255,255,0.07); }
+    .seat-dot.bjp        { background: var(--bjp); }
+    .seat-dot.bjp-lead   { background: rgba(255,107,0,0.4); }
+    .seat-dot.tmc        { background: var(--tmc); }
+    .seat-dot.tmc-lead   { background: rgba(33,150,243,0.4); }
+    .seat-dot.other      { background: #e693c3; }
+    .seat-dot.na         { background: rgba(255,255,255,0.07); }
 
     /* ── LEGEND ── */
     .legend {
@@ -611,6 +645,47 @@
       border-radius: 2px;
       flex-shrink: 0;
     }
+
+    /* ── WON BANNER ── */
+    .won-banner {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto 14px;
+      padding: 0 12px;
+    }
+    .won-banner-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .won-banner-card {
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .won-banner-card.bjp {
+      background: linear-gradient(135deg, rgba(255,107,0,0.15), rgba(255,107,0,0.05));
+      border: 1px solid rgba(255,107,0,0.4);
+    }
+    .won-banner-card.tmc {
+      background: linear-gradient(135deg, rgba(33,150,243,0.15), rgba(33,150,243,0.05));
+      border: 1px solid rgba(33,150,243,0.4);
+    }
+    .won-banner-icon { font-size: 28px; flex-shrink: 0; line-height: 1; }
+    .won-banner-info { flex: 1; min-width: 0; }
+    .won-banner-label { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+    .won-banner-num { font-size: clamp(22px, 6vw, 32px); font-weight: 900; line-height: 1; }
+    .won-banner-num.bjp { color: var(--bjp); }
+    .won-banner-num.tmc { color: var(--tmc); }
+    .won-banner-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    /* candidate Won badge */
+    .cand-badge.won-bjp { background: rgba(255,107,0,0.3); color: #FF9A4D; border: 1px solid rgba(255,107,0,0.6); }
+    .cand-badge.won-tmc { background: rgba(33,150,243,0.3); color: #64B5F6; border: 1px solid rgba(33,150,243,0.6); }
+    .cand-badge.won-other { background: rgba(230,147,195,0.25); color: #e693c3; border: 1px solid rgba(230,147,195,0.5); }
 
     /* ── CANDIDATES LIST ── */
     .candidates-list {
@@ -1024,7 +1099,7 @@
     <div class="fighter-name bjp">Narendra<br>Modi</div>
     <div class="fighter-party">BJP</div>
     <div class="fighter-seats bjp" id="bjp-seats">—</div>
-    <div class="fighter-label">SEATS LEADING</div>
+    <div class="fighter-label">WON + LEADING</div>
   </div>
 
   <div class="vs-divider">
@@ -1040,7 +1115,7 @@
     <div class="fighter-name tmc">Mamata<br>Banerjee</div>
     <div class="fighter-party">AITC / TMC</div>
     <div class="fighter-seats tmc" id="tmc-seats">—</div>
-    <div class="fighter-label">SEATS LEADING</div>
+    <div class="fighter-label">WON + LEADING</div>
   </div>
 </div>
 
@@ -1068,6 +1143,28 @@
 </div>
 
 
+<!-- CONFIRMED WINS BANNER -->
+<div class="won-banner">
+  <div class="won-banner-inner">
+    <div class="won-banner-card bjp">
+      <div class="won-banner-icon">🏆</div>
+      <div class="won-banner-info">
+        <div class="won-banner-label">BJP — Won</div>
+        <div class="won-banner-num bjp" id="won-bjp">—</div>
+        <div class="won-banner-sub" id="lead-bjp-sub">Leading: —</div>
+      </div>
+    </div>
+    <div class="won-banner-card tmc">
+      <div class="won-banner-icon">🏆</div>
+      <div class="won-banner-info">
+        <div class="won-banner-label">TMC — Won</div>
+        <div class="won-banner-num tmc" id="won-tmc">—</div>
+        <div class="won-banner-sub" id="lead-tmc-sub">Leading: —</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- PARTY TALLY -->
 <div class="section">
   <div class="section-title">Party Tally</div>
@@ -1075,12 +1172,20 @@
     <div class="party-card bjp">
       <div class="party-card-name">BJP</div>
       <div class="party-card-count bjp" id="pc-bjp">—</div>
-      <div class="party-card-label">Leading / Won</div>
+      <div class="party-card-label">Total (Won + Leading)</div>
+      <div class="party-card-won">
+        <span class="won-chip bjp" id="chip-won-bjp">✓ Won: —</span>
+        <span class="lead-chip" id="chip-lead-bjp">Leading: —</span>
+      </div>
     </div>
     <div class="party-card tmc">
       <div class="party-card-name">AITC / TMC</div>
       <div class="party-card-count tmc" id="pc-tmc">—</div>
-      <div class="party-card-label">Leading / Won</div>
+      <div class="party-card-label">Total (Won + Leading)</div>
+      <div class="party-card-won">
+        <span class="won-chip tmc" id="chip-won-tmc">✓ Won: —</span>
+        <span class="lead-chip" id="chip-lead-tmc">Leading: —</span>
+      </div>
     </div>
   </div>
 </div>
@@ -1090,8 +1195,10 @@
   <div class="section-title">Seat Map — 294 Constituencies</div>
   <div class="seat-grid" id="seat-grid"></div>
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--bjp)"></div>BJP</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--tmc)"></div>AITC / TMC</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--bjp)"></div>BJP Won</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(255,107,0,0.4)"></div>BJP Leading</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--tmc)"></div>TMC Won</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(33,150,243,0.4)"></div>TMC Leading</div>
     <div class="legend-item"><div class="legend-dot" style="background:#e693c3"></div>Other</div>
     <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,0.1)"></div>Counting</div>
   </div>
@@ -1099,7 +1206,7 @@
 
 <!-- CANDIDATES -->
 <div class="section">
-  <div class="section-title">All Declared Results</div>
+  <div class="section-title">All Results — ✓ Won &amp; Leading</div>
   <div class="candidates-list" id="candidates-list">
     <div style="color:var(--muted);font-size:12px;padding:12px;">Loading...</div>
   </div>
@@ -1237,13 +1344,13 @@
     let bjpCount = 0, tmcCount = 0, naCount = 0;
     const seatMap = {};
 
-    chart.forEach(([party, status, seatNo, name]) => {
-      seatMap[seatNo] = { party, status, name };
+    chart.forEach(([party, , seatNo, name]) => {
+      seatMap[seatNo] = { party, name };
       if (party === 'BJP')       bjpCount++;
       else if (party === 'AITC') tmcCount++;
       else if (party === 'NA')   naCount++;
     });
-    dbg(`BJP: ${bjpCount} | TMC: ${tmcCount} | NA: ${naCount} | OR_KEY: ${window.OR_KEY ? 'YES' : 'NO'}`);
+    dbg(`BJP: ${bjpCount} | TMC: ${tmcCount} | NA: ${naCount}`);
 
     // Seat counters
     const bjpEl = document.getElementById('bjp-seats');
@@ -1254,6 +1361,8 @@
 
     document.getElementById('pc-bjp').textContent = bjpCount;
     document.getElementById('pc-tmc').textContent = tmcCount;
+
+    // Won / Leading breakdown populated separately by fetchWonData()
 
     // Bar
     const bjpPct = (bjpCount / TOTAL) * 100;
@@ -1277,6 +1386,7 @@
       const dot = document.createElement('div');
       const cls = seat ? getPartyClass(seat.party) : 'na';
       dot.className = 'seat-dot ' + cls;
+      dot.id = 'seat-' + i;
       const label = seat?.party === 'AITC' ? 'TMC' : (seat?.party || '?');
       dot.setAttribute('data-tip',
         seat && seat.party !== 'NA'
@@ -1302,13 +1412,14 @@
         const isMamata = seatNo === 159;
         const cls = getPartyClass(party);
         const partyLabel = party === 'AITC' ? 'AITC (TMC)' : party;
-        return `<div class="candidate-row${isMamata ? ' mamata-row' : ''}">
+        const badgeCls = cls === 'other' ? 'other' : cls;
+        return `<div class="candidate-row${isMamata ? ' mamata-row' : ''}" id="cand-${seatNo}">
           <div class="cand-num">#${seatNo}</div>
           <div class="cand-info">
             <div class="cand-name">${name}${isMamata ? ' 👑' : ''}</div>
             <div class="cand-party">${partyLabel} · Seat ${seatNo}</div>
           </div>
-          <span class="cand-badge ${cls === 'other' ? 'other' : cls}">${party}</span>
+          <span class="cand-badge ${badgeCls}" id="badge-${seatNo}">LEADING</span>
         </div>`;
       });
       listEl.innerHTML = rows.join('');
@@ -1441,9 +1552,66 @@
     }, 1000);
   }
 
+  async function fetchWonData() {
+    try {
+      const res = await fetch('/api/wondata', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const d = await res.json();
+      dbg('Won data: ' + JSON.stringify(d.summary));
+
+      const bjpWon   = d.summary?.BJP?.won     ?? 0;
+      const bjpLead  = d.summary?.BJP?.leading  ?? 0;
+      const tmcWon   = d.summary?.AITC?.won    ?? 0;
+      const tmcLead  = d.summary?.AITC?.leading ?? 0;
+
+      // Banner
+      document.getElementById('won-bjp').textContent     = bjpWon;
+      document.getElementById('won-tmc').textContent     = tmcWon;
+      document.getElementById('lead-bjp-sub').textContent = 'Leading: ' + bjpLead;
+      document.getElementById('lead-tmc-sub').textContent = 'Leading: ' + tmcLead;
+
+      // Party tally chips
+      document.getElementById('chip-won-bjp').textContent  = '✓ Won: ' + bjpWon;
+      document.getElementById('chip-lead-bjp').textContent = 'Leading: ' + bjpLead;
+      document.getElementById('chip-won-tmc').textContent  = '✓ Won: ' + tmcWon;
+      document.getElementById('chip-lead-tmc').textContent = 'Leading: ' + tmcLead;
+
+      // Mark confirmed won seats in the grid + candidate list
+      const wonSeats = new Set();
+      (d.bjpWonSeats || []).forEach(s => { if (s.seatNo) wonSeats.add(s.seatNo); });
+      (d.tmcWonSeats || []).forEach(s => { if (s.seatNo) wonSeats.add(s.seatNo); });
+
+      wonSeats.forEach(seatNo => {
+        // Seat dot — switch to solid won class
+        const dot = document.getElementById('seat-' + seatNo);
+        if (dot) {
+          if (dot.classList.contains('bjp-lead')) dot.classList.replace('bjp-lead', 'bjp');
+          else if (dot.classList.contains('tmc-lead')) dot.classList.replace('tmc-lead', 'tmc');
+          const tip = dot.getAttribute('data-tip') || '';
+          if (!tip.includes('✓WON')) dot.setAttribute('data-tip', tip + ' ✓WON');
+        }
+        // Badge in candidates list
+        const badge = document.getElementById('badge-' + seatNo);
+        if (badge) {
+          if (badge.classList.contains('bjp')) {
+            badge.className = 'cand-badge won-bjp';
+          } else if (badge.classList.contains('tmc')) {
+            badge.className = 'cand-badge won-tmc';
+          } else {
+            badge.className = 'cand-badge won-other';
+          }
+          badge.textContent = '✓ WON';
+        }
+      });
+    } catch(e) {
+      dbg('fetchWonData failed: ' + e.message);
+    }
+  }
+
   async function fetchAndRefresh() {
     try {
       await fetchData();
+      fetchWonData(); // fire-and-forget, updates won overlay after main data
     } catch (err) {
       console.error(err);
       const overlay = document.getElementById('loading-overlay');
