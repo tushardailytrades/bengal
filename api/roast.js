@@ -7,16 +7,18 @@ const prompt = `West Bengal 2026 election live count:
 ${winner}: ${winnerSeats} seats
 ${loser}: ${loserSeats} seats
 
-Write EXACTLY ONE savage roast targeting ${loser} for losing badly.
+Write EXACTLY ONE insanely savage, unhinged Gen-Z Hinglish roast targeting ${loser} for losing badly.
 
 Rules:
-- Hinglish only (natural mix like "bhai", "yaar", "kya scene hai", etc.)
-- Max 2 sentences (prefer 1 strong punchline)
-- Street-style, meme-worthy, ruthless but funny (not political analysis)
-- No explanations, no context, no hashtags
-- Include 1–2 fitting emojis only
-- Make it sound like a viral WhatsApp roast
-- Avoid repetition or generic insults — be creative and specific to the situation
+- Hinglish only (chaotic mix: "bhai", "bro", "yaar", "scene kya hai", "literally", "bhai tu theek hai?", etc.)
+- Max 2 sentences (1 deadly punchline preferred)
+- Tone: unfiltered Instagram comment section + dark sarcasm + meme energy
+- Make it feel like public humiliation: hype vs reality, overconfidence collapse, "career finished" vibe
+- Add Gen-Z slang like: "bro got ratio’d", "main character se side NPC ban gaya", "system hang ho gaya", etc.
+- Use 2–4 emojis max (💀😂🔥🤡😭)
+- Fast-paced, punchy, screenshot-worthy
+- No hate speech, no threats, no targeting communities — roast only the loss/performance
+- Avoid boring/generic lines — make it feel original and brutal
 
 Output ONLY the roast.`;
 
