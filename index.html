@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>🗳️ West Bengal Elections 2026 — LIVE</title>
+  <style>
+    :root {
+      --bjp: #FF6B00;
+      --bjp-dark: #C94F00;
+      --bjp-glow: rgba(255,107,0,0.35);
+      --tmc: #2196F3;
+      --tmc-dark: #1565C0;
+      --tmc-glow: rgba(33,150,243,0.35);
+      --bg: #06060f;
+      --card: #0f0f1e;
+      --border: rgba(255,255,255,0.08);
+      --text: #e0e0f0;
+      --muted: #888;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 50%, rgba(255,107,0,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 60% at 80% 50%, rgba(33,150,243,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      text-align: center;
+      padding: calc(12px + var(--safe-top)) 16px 12px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(6,6,15,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e53935;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+      animation: pulse-badge 1.5s ease-in-out infinite;
+    }
+
+    .live-dot {
+      width: 6px; height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      animation: blink 1s step-end infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes pulse-badge {
+      0%,100%{box-shadow:0 0 0 0 rgba(229,57,53,0.5)}
+      50%{box-shadow:0 0 0 5px rgba(229,57,53,0)}
+    }
+
+    .header-title {
+      font-size: clamp(15px, 4.5vw, 26px);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    .header-sub {
+      font-size: clamp(10px, 2.5vw, 12px);
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .refresh-info {
+      margin-top: 6px;
+      font-size: 10px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    #countdown {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-weight: 700;
+      color: #bbb;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* ── BATTLE ARENA ── */
+    .battle-arena {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 56px 1fr;
+      align-items: center;
+      padding: 20px 12px 12px;
+      max-width: 900px;
+      margin: 0 auto;
+      gap: 4px;
+    }
+
+    .fighter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+
+    .fighter-avatar {
+      width: clamp(72px, 18vw, 110px);
+      height: clamp(72px, 18vw, 110px);
+      border-radius: 50%;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .fighter-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+    }
+
+    .fighter-avatar.bjp {
+      box-shadow: 0 0 28px var(--bjp-glow), 0 0 0 3px var(--bjp);
+      cursor: pointer;
+    }
+
+    .fighter-avatar.bjp:active img { transform: scale(0.93); }
+
+    .fighter-avatar.tmc {
+      box-shadow: 0 0 28px var(--tmc-glow), 0 0 0 3px var(--tmc);
+    }
+
+    .tap-hint {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      text-align: center;
+      padding: 3px 0;
+      letter-spacing: 0.5px;
+      border-radius: 0 0 50px 50px;
+      pointer-events: none;
+    }
+
+    .fighter-avatar.bjp.playing {
+      box-shadow: 0 0 0 3px var(--bjp), 0 0 0 6px rgba(255,107,0,0.4), 0 0 30px var(--bjp-glow);
+      animation: ring-pulse 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes ring-pulse {
+      from { box-shadow: 0 0 0 3px var(--bjp), 0 0 0 6px rgba(255,107,0,0.25), 0 0 20px var(--bjp-glow); }
+      to   { box-shadow: 0 0 0 3px var(--bjp), 0 0 0 10px rgba(255,107,0,0.5), 0 0 40px var(--bjp-glow); }
+    }
+
+    .fighter-name {
+      font-size: clamp(12px, 3vw, 17px);
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .fighter-name.bjp { color: #FF9A4D; }
+    .fighter-name.tmc { color: #64B5F6; }
+
+    .fighter-party {
+      font-size: clamp(9px, 2vw, 11px);
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .fighter-seats {
+      font-size: clamp(38px, 11vw, 64px);
+      font-weight: 900;
+      line-height: 1;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .fighter-seats.bjp { color: var(--bjp); text-shadow: 0 0 24px var(--bjp-glow); }
+    .fighter-seats.tmc { color: var(--tmc); text-shadow: 0 0 24px var(--tmc-glow); }
+    .fighter-seats.bump { transform: scale(1.25); }
+
+    .fighter-label {
+      font-size: clamp(8px, 1.8vw, 10px);
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .vs-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .vs-text {
+      font-size: clamp(18px, 5vw, 28px);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--bjp), var(--tmc));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .lightning {
+      font-size: clamp(14px, 4vw, 20px);
+      animation: zap 1.5s ease-in-out infinite;
+    }
+
+    @keyframes zap { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+    /* ── PROGRESS BAR ── */
+    .seats-bar-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 12px 16px;
+    }
+
+    .majority-label {
+      font-size: 9px;
+      color: rgba(255,255,255,0.35);
+      text-align: center;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .bar-container { position: relative; }
+
+    .majority-tick {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 9px;
+      color: rgba(255,255,255,0.35);
+      white-space: nowrap;
+    }
+
+    .seats-bar-track {
+      height: 26px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 13px;
+      overflow: hidden;
+      display: flex;
+      position: relative;
+      border: 1px solid var(--border);
+    }
+
+    .seats-bar-bjp {
+      background: linear-gradient(90deg, #C94F00, #FF6B00);
+      transition: width 1s cubic-bezier(0.4,0,0.2,1);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .seats-bar-tmc {
+      background: linear-gradient(90deg, #1565C0, #2196F3);
+      transition: width 1s cubic-bezier(0.4,0,0.2,1);
+      display: flex;
+      align-items: center;
+      padding-left: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .seats-bar-na {
+      background: rgba(255,255,255,0.05);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .majority-marker {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: rgba(255,255,255,0.25);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .bar-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 11px;
+      flex-wrap: nowrap;
+      gap: 4px;
+    }
+
+    .bar-stats span { white-space: nowrap; }
+
+    /* ── COMMENTARY ── */
+    .commentary {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto 14px;
+      padding: 0 12px;
+    }
+
+    .commentary-inner {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-align: center;
+      font-size: clamp(12px, 3vw, 14px);
+      color: #ccc;
+      line-height: 1.55;
+      min-height: 46px;
+      transition: all 0.4s ease;
+    }
+
+    /* ── MAMATA SPOTLIGHT ── */
+    .mamata-spotlight {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto 14px;
+      padding: 0 12px;
+    }
+
+    .mamata-card {
+      background: linear-gradient(135deg, rgba(33,150,243,0.1), rgba(33,150,243,0.03));
+      border: 1px solid rgba(33,150,243,0.3);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: nowrap;
+    }
+
+    .mamata-icon {
+      font-size: clamp(28px, 7vw, 36px);
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .mamata-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mamata-info h3 {
+      font-size: clamp(10px, 2.5vw, 12px);
+      color: #64B5F6;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mamata-name {
+      font-size: clamp(14px, 3.5vw, 17px);
+      font-weight: 800;
+      color: #fff;
+      margin: 2px 0 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mamata-const {
+      font-size: clamp(10px, 2.5vw, 11px);
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mamata-status {
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: clamp(10px, 2.5vw, 11px);
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .status-pill.tmc-status { background: rgba(33,150,243,0.2); color: #64B5F6; border: 1px solid rgba(33,150,243,0.4); }
+    .status-pill.bjp-status { background: rgba(255,107,0,0.2); color: #FF9A4D; border: 1px solid rgba(255,107,0,0.4); }
+    .status-pill.na-status  { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid var(--border); }
+
+    /* ── SECTIONS ── */
+    .section {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 12px 16px;
+    }
+
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── PARTY TALLY CARDS ── */
+    .party-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .party-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .party-card.bjp { border-color: rgba(255,107,0,0.2); }
+    .party-card.tmc { border-color: rgba(33,150,243,0.2); }
+
+    .party-card-name  { font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: 1px; }
+    .party-card-count { font-size: clamp(28px, 8vw, 38px); font-weight: 900; line-height: 1; }
+    .party-card-count.bjp { color: var(--bjp); }
+    .party-card-count.tmc { color: var(--tmc); }
+    .party-card-label { font-size: 10px; color: var(--muted); }
+
+    /* ── SEAT GRID ── */
+    .seat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(22px, 1fr));
+      gap: 3px;
+    }
+
+    .seat-dot {
+      aspect-ratio: 1;
+      border-radius: 3px;
+      position: relative;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.15s ease, z-index 0s;
+    }
+
+    @media (hover: hover) {
+      .seat-dot:hover { transform: scale(1.6); z-index: 10; }
+      .seat-dot:hover::after {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1a1a2e;
+        border: 1px solid var(--border);
+        color: #fff;
+        font-size: 10px;
+        white-space: nowrap;
+        padding: 4px 8px;
+        border-radius: 6px;
+        z-index: 100;
+        pointer-events: none;
+      }
+    }
+
+    .seat-dot.bjp   { background: var(--bjp); }
+    .seat-dot.tmc   { background: var(--tmc); }
+    .seat-dot.other { background: #e693c3; }
+    .seat-dot.na    { background: rgba(255,255,255,0.07); }
+
+    /* ── LEGEND ── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── CANDIDATES LIST ── */
+    .candidates-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      max-height: 420px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .candidates-list::-webkit-scrollbar { width: 3px; }
+    .candidates-list::-webkit-scrollbar-track { background: transparent; }
+    .candidates-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+    .candidate-row {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      min-width: 0;
+    }
+
+    .candidate-row.mamata-row {
+      border-color: rgba(33,150,243,0.4);
+      background: rgba(33,150,243,0.06);
+    }
+
+    .cand-num {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .cand-info { min-width: 0; }
+
+    .cand-name {
+      font-size: clamp(11px, 3vw, 13px);
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cand-party {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cand-badge {
+      display: inline-block;
+      padding: 3px 7px;
+      border-radius: 5px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .cand-badge.bjp   { background: rgba(255,107,0,0.2);  color: #FF9A4D; }
+    .cand-badge.tmc   { background: rgba(33,150,243,0.2); color: #64B5F6; }
+    .cand-badge.other { background: rgba(255,255,255,0.08); color: #aaa; }
+
+    /* ── LOADING / ERROR OVERLAY ── */
+    .status-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(6,6,15,0.92);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      gap: 16px;
+      padding: 24px;
+    }
+
+    .spinner {
+      width: 44px; height: 44px;
+      border: 3px solid rgba(255,255,255,0.08);
+      border-top-color: var(--bjp);
+      border-right-color: var(--tmc);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .status-overlay p {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.6;
+      max-width: 280px;
+    }
+
+    .status-overlay.error .spinner { display: none; }
+    .status-overlay.error p:first-of-type { color: #ef5350; }
+
+    .retry-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* ── VICTORY SCREEN ── */
+    #victory-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 800;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+      overflow: hidden;
+    }
+
+    #victory-screen.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #victory-screen.bjp-win {
+      background: radial-gradient(ellipse at 50% 30%, rgba(255,107,0,0.25) 0%, rgba(6,6,15,0.97) 70%);
+    }
+
+    #victory-screen.tmc-win {
+      background: radial-gradient(ellipse at 50% 30%, rgba(33,150,243,0.25) 0%, rgba(6,6,15,0.97) 70%);
+    }
+
+    .victory-fireworks {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .victory-stamp {
+      font-size: clamp(14px, 4vw, 18px);
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      animation: stamp-in 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+    }
+
+    .victory-stamp.bjp { color: var(--bjp); }
+    .victory-stamp.tmc { color: var(--tmc); }
+
+    .victory-photo {
+      width: clamp(110px, 30vw, 160px);
+      height: clamp(110px, 30vw, 160px);
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+      margin-bottom: 20px;
+      animation: photo-pop 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.5s both;
+    }
+
+    .victory-photo.bjp { box-shadow: 0 0 0 4px var(--bjp), 0 0 50px var(--bjp-glow); }
+    .victory-photo.tmc { box-shadow: 0 0 0 4px var(--tmc), 0 0 50px var(--tmc-glow); }
+
+    .victory-crown {
+      font-size: clamp(40px, 12vw, 64px);
+      animation: crown-bounce 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .victory-name {
+      font-size: clamp(24px, 7vw, 42px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.1;
+      animation: slide-up 0.5s ease 0.8s both;
+    }
+
+    .victory-party {
+      font-size: clamp(13px, 3.5vw, 18px);
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-top: 6px;
+      animation: slide-up 0.5s ease 0.9s both;
+    }
+
+    .victory-party.bjp { color: #FF9A4D; }
+    .victory-party.tmc { color: #64B5F6; }
+
+    .victory-seats {
+      margin-top: 20px;
+      font-size: clamp(13px, 3.5vw, 16px);
+      color: rgba(255,255,255,0.7);
+      animation: slide-up 0.5s ease 1s both;
+    }
+
+    .victory-seats strong {
+      font-size: clamp(28px, 8vw, 44px);
+      font-weight: 900;
+      display: block;
+      line-height: 1;
+      margin-top: 4px;
+    }
+
+    .victory-seats strong.bjp { color: var(--bjp); }
+    .victory-seats strong.tmc { color: var(--tmc); }
+
+    .victory-tagline {
+      margin-top: 18px;
+      font-size: clamp(14px, 4vw, 18px);
+      color: #fff;
+      font-weight: 700;
+      line-height: 1.4;
+      max-width: 320px;
+      animation: slide-up 0.5s ease 1.1s both;
+    }
+
+    .victory-close {
+      margin-top: 28px;
+      padding: 12px 32px;
+      border-radius: 50px;
+      border: 2px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      animation: slide-up 0.5s ease 1.3s both;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      transition: background 0.2s;
+    }
+
+    .victory-close:hover  { background: rgba(255,255,255,0.15); }
+    .victory-close:active { transform: scale(0.96); }
+
+    @keyframes stamp-in   { from { opacity:0; transform: scale(2) rotate(-5deg); } to { opacity:1; transform: scale(1) rotate(0); } }
+    @keyframes photo-pop  { from { opacity:0; transform: scale(0.3); }             to { opacity:1; transform: scale(1); } }
+    @keyframes crown-bounce { from { opacity:0; transform: translateY(-40px) scale(0.5); } to { opacity:1; transform: translateY(0) scale(1); } }
+    @keyframes slide-up   { from { opacity:0; transform: translateY(24px); }       to { opacity:1; transform: translateY(0); } }
+
+    /* confetti dot used by JS */
+    .conf-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      pointer-events: none;
+      animation: conf-fall var(--dur) linear var(--delay) forwards;
+      top: -10px;
+    }
+
+    @keyframes conf-fall {
+      0%   { transform: translateX(0) translateY(0) rotate(0deg);   opacity: 1; }
+      100% { transform: translateX(var(--dx)) translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 20px 16px calc(16px + var(--safe-bottom));
+      font-size: 10px;
+      color: rgba(255,255,255,0.18);
+      border-top: 1px solid var(--border);
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+
+    .social-bar {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 12px 4px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      white-space: nowrap;
+    }
+
+    .social-link:active { transform: scale(0.95); opacity: 0.85; }
+
+    .social-link.twitter {
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+    }
+
+    .social-link.instagram {
+      background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: #fff;
+      border: none;
+    }
+
+    .social-icon { font-size: 16px; line-height: 1; flex-shrink: 0; }
+
+    @media (hover: hover) {
+      .social-link.twitter:hover  { background: rgba(255,255,255,0.08); }
+      .social-link.instagram:hover { filter: brightness(1.1); }
+    }
+
+    /* ── RESPONSIVE BREAKPOINTS ── */
+
+    /* Large phones / tablets */
+    @media (min-width: 480px) {
+      .battle-arena { grid-template-columns: 1fr 64px 1fr; padding: 24px 20px 16px; }
+      .seats-bar-wrap { padding: 0 20px 16px; }
+      .commentary { padding: 0 20px; margin-bottom: 16px; }
+      .mamata-spotlight { padding: 0 20px; }
+      .section { padding: 0 20px 20px; }
+      .seat-grid { grid-template-columns: repeat(auto-fill, minmax(26px, 1fr)); }
+    }
+
+    /* Very small phones (< 360px) */
+    @media (max-width: 359px) {
+      .battle-arena { grid-template-columns: 1fr 44px 1fr; padding: 14px 8px 8px; gap: 2px; }
+      .fighter-label { display: none; }
+      .mamata-card { flex-wrap: wrap; }
+      .mamata-status { width: 100%; text-align: left; }
+      .bar-stats { font-size: 10px; }
+    }
+
+    /* Landscape on small phones */
+    @media (max-height: 500px) and (orientation: landscape) {
+      header { padding-top: 8px; padding-bottom: 8px; }
+      .battle-arena { padding-top: 12px; padding-bottom: 8px; }
+      .fighter-avatar { width: 52px; height: 52px; font-size: 26px; }
+      .fighter-seats { font-size: 32px; }
+    }
+
+    /* Tablet / desktop */
+    @media (min-width: 640px) {
+      .battle-arena { padding: 28px 24px 20px; gap: 8px; }
+      .seats-bar-wrap, .commentary, .mamata-spotlight, .section { padding-left: 24px; padding-right: 24px; }
+      .seat-grid { grid-template-columns: repeat(auto-fill, minmax(28px, 1fr)); gap: 4px; }
+      .party-card { padding: 18px; }
+    }
+
+    @media (min-width: 900px) {
+      .battle-arena, .seats-bar-wrap, .commentary, .mamata-spotlight, .section { padding-left: 0; padding-right: 0; }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="status-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <p>Fetching live results from ECI...</p>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="live-badge"><span class="live-dot"></span>LIVE COUNTING</div>
+  <div class="header-title">⚡ West Bengal Elections 2026</div>
+  <div class="header-sub">294 Constituencies &nbsp;·&nbsp; BJP vs AITC Showdown</div>
+  <div class="refresh-info">
+    Refreshes in <span id="countdown">30</span>s
+    &nbsp;·&nbsp;
+    Updated: <span id="last-updated">—</span>
+  </div>
+</header>
+
+<!-- BATTLE ARENA -->
+<div class="battle-arena">
+  <div class="fighter">
+    <div class="fighter-avatar bjp" id="modi-avatar" onclick="playModiAudio()" title="Tap for a surprise!">
+      <img src="modi.jpeg" alt="Narendra Modi" draggable="false" />
+      <div class="tap-hint">TAP ME 🔊</div>
+    </div>
+    <div class="fighter-name bjp">Narendra<br>Modi</div>
+    <div class="fighter-party">BJP</div>
+    <div class="fighter-seats bjp" id="bjp-seats">—</div>
+    <div class="fighter-label">SEATS WON/LEADING</div>
+  </div>
+
+  <div class="vs-divider">
+    <div class="lightning">⚡</div>
+    <div class="vs-text">VS</div>
+    <div class="lightning">⚡</div>
+  </div>
+
+  <div class="fighter">
+    <div class="fighter-avatar tmc">
+      <img src="mamta.jpeg" alt="Mamata Banerjee" draggable="false" />
+    </div>
+    <div class="fighter-name tmc">Mamata<br>Banerjee</div>
+    <div class="fighter-party">AITC / TMC</div>
+    <div class="fighter-seats tmc" id="tmc-seats">—</div>
+    <div class="fighter-label">SEATS WON/LEADING</div>
+  </div>
+</div>
+
+<!-- SEATS BAR -->
+<div class="seats-bar-wrap">
+  <div class="bar-container">
+    <div class="majority-tick">▼ Majority (148)</div>
+    <div class="seats-bar-track">
+      <div class="seats-bar-bjp" id="bar-bjp" style="width:0%"></div>
+      <div class="seats-bar-na" id="bar-na"></div>
+      <div class="seats-bar-tmc" id="bar-tmc" style="width:0%"></div>
+      <div class="majority-marker"></div>
+    </div>
+  </div>
+  <div class="bar-stats">
+    <span id="bar-stat-bjp" style="color:var(--bjp);font-weight:700">BJP 0</span>
+    <span id="bar-stat-na" style="color:var(--muted)">Counting: 294</span>
+    <span id="bar-stat-tmc" style="color:var(--tmc);font-weight:700">TMC 0</span>
+  </div>
+</div>
+
+<!-- COMMENTARY -->
+<div class="commentary">
+  <div class="commentary-inner" id="commentary">Loading commentary...</div>
+</div>
+
+<!-- MAMATA SPOTLIGHT -->
+<div class="mamata-spotlight">
+  <div class="mamata-card">
+    <div class="mamata-icon">👩</div>
+    <div class="mamata-info">
+      <h3>👁️ MAMATA'S OWN SEAT</h3>
+      <div class="mamata-name">MAMATA BANERJEE</div>
+      <div class="mamata-const">Constituency #159 · Bhawanipore</div>
+    </div>
+    <div class="mamata-status">
+      <div class="status-pill na-status" id="mamata-status">⏳ Counting</div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTY TALLY -->
+<div class="section">
+  <div class="section-title">Party Tally</div>
+  <div class="party-cards">
+    <div class="party-card bjp">
+      <div class="party-card-name">BJP</div>
+      <div class="party-card-count bjp" id="pc-bjp">—</div>
+      <div class="party-card-label">Leading / Won</div>
+    </div>
+    <div class="party-card tmc">
+      <div class="party-card-name">AITC / TMC</div>
+      <div class="party-card-count tmc" id="pc-tmc">—</div>
+      <div class="party-card-label">Leading / Won</div>
+    </div>
+  </div>
+</div>
+
+<!-- SEAT MAP -->
+<div class="section">
+  <div class="section-title">Seat Map — 294 Constituencies</div>
+  <div class="seat-grid" id="seat-grid"></div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--bjp)"></div>BJP</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--tmc)"></div>AITC / TMC</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e693c3"></div>Other</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(255,255,255,0.1)"></div>Counting</div>
+  </div>
+</div>
+
+<!-- CANDIDATES -->
+<div class="section">
+  <div class="section-title">All Declared Results</div>
+  <div class="candidates-list" id="candidates-list">
+    <div style="color:var(--muted);font-size:12px;padding:12px;">Loading...</div>
+  </div>
+</div>
+
+<!-- VICTORY SCREEN -->
+<div id="victory-screen">
+  <div class="victory-fireworks" id="victory-fireworks"></div>
+  <div class="victory-stamp" id="v-stamp">🏆 WINNER</div>
+  <span class="victory-crown" id="v-crown">👑</span>
+  <img class="victory-photo" id="v-photo" src="" alt="" />
+  <div class="victory-name" id="v-name"></div>
+  <div class="victory-party" id="v-party"></div>
+  <div class="victory-seats" id="v-seats">
+    Seats Won / Leading
+    <strong id="v-seats-num"></strong>
+  </div>
+  <div class="victory-tagline" id="v-tagline"></div>
+  <button class="victory-close" onclick="closeVictory()">See Full Results →</button>
+</div>
+
+<div class="social-bar">
+  <a class="social-link twitter" href="https://twitter.com/tushueth" target="_blank" rel="noopener">
+    <span class="social-icon">𝕏</span> @tushueth
+  </a>
+  <a class="social-link instagram" href="https://instagram.com/tushuyrr" target="_blank" rel="noopener">
+    <span class="social-icon">📸</span> @tushuyrr
+  </a>
+</div>
+
+<footer>
+  Data: Election Commission of India · election-json-S25-live.json<br>
+  Auto-refreshes every 30 seconds
+</footer>
+
+<script>
+  const API_URL = 'https://results.eci.gov.in/ResultAcGenMay2026/election-json-S25-live.json';
+
+  // ── Modi audio ──
+  const modiAudio = new Audio('modi-ji-bhen-ke-lode-meme-shortsmp3-160k-made-with-Voicemod.mp3');
+  const modiAvatar = document.getElementById('modi-avatar');
+
+  function playModiAudio() {
+    if (!modiAudio.paused) {
+      modiAudio.pause();
+      modiAudio.currentTime = 0;
+      modiAvatar.classList.remove('playing');
+      return;
+    }
+    modiAudio.currentTime = 0;
+    modiAudio.play().catch(() => {});
+    modiAvatar.classList.add('playing');
+  }
+
+  modiAudio.addEventListener('ended', () => modiAvatar.classList.remove('playing'));
+  const TOTAL = 294;
+
+  const COMMENTARIES = {
+    bjpLead: [
+      "🦁 Modi ka jaadu! BJP is roaring ahead in Bengal! Amit Shah must be doing bhangra right now! 💃",
+      "🏆 Saffron surge! BJP is leading — TMC might need to rethink its whole strategy! 😅",
+      "📣 Jai Sri Ram echoing in Kolkata? BJP is ahead — this is WILD! 🎉",
+      "🔱 The lotus is blooming in Bengal! Modi wave hitting hard! 🌊"
+    ],
+    tmcLead: [
+      "💪 Didi is NO JOKE! Mamata is flexing harder than a Kolkata morning dumbbell session! 🏋️",
+      "🐯 Khela hobey! And Mamata is winning it! TMC is dominating the scoreboard! 🎯",
+      "👑 Didi says 'Bangla Nijer Meyeke Chay' and Bengal agrees! TMC is ahead! 🌺",
+      "🔥 Mamata is the queen of Bengal! TMC is crushing it — BJP might need a tissue! 😭"
+    ],
+    tied: [
+      "😲 Neck and neck! Tighter than a Kolkata local train at rush hour! 🚂",
+      "🤯 It's TIED! The counting booth must be a warzone right now! ⚔️",
+      "🎭 Who's winning? Nobody knows! More unpredictable than Bengal weather! 🌦️",
+      "🍿 Grab your Jhal Muri — this is going to be a LONG night! 😄"
+    ],
+    counting: [
+      "⏳ Still counting... like your Dadi counting your mistakes at family dinners 😅",
+      "🗳️ Ballots counted faster than WhatsApp forwards during election season! 📲",
+      "🔢 Numbers rolling in! History being written one EVM at a time! 📖"
+    ]
+  };
+
+  let countdownVal = 30;
+  let countdownTimer;
+  let prevBjp = -1, prevTmc = -1;
+
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function getCommentary(bjp, tmc) {
+    if (bjp + tmc < 10) return pick(COMMENTARIES.counting);
+    const diff = bjp - tmc;
+    if (Math.abs(diff) <= 5) return pick(COMMENTARIES.tied);
+    return diff > 5 ? pick(COMMENTARIES.bjpLead) : pick(COMMENTARIES.tmcLead);
+  }
+
+  function getPartyClass(party) {
+    if (party === 'BJP')  return 'bjp';
+    if (party === 'AITC') return 'tmc';
+    if (party === 'NA')   return 'na';
+    return 'other';
+  }
+
+  function animateBump(el) {
+    el.classList.remove('bump');
+    void el.offsetWidth;
+    el.classList.add('bump');
+    setTimeout(() => el.classList.remove('bump'), 400);
+  }
+
+  function updateUI(data) {
+    const s25 = data['S25'];
+    if (!s25) return;
+
+    const chart = s25.chartData;
+    let bjpCount = 0, tmcCount = 0, naCount = 0;
+    const seatMap = {};
+
+    chart.forEach(([party, , seatNo, name]) => {
+      seatMap[seatNo] = { party, name };
+      if (party === 'BJP')       bjpCount++;
+      else if (party === 'AITC') tmcCount++;
+      else if (party === 'NA')   naCount++;
+    });
+
+    // Seat counters
+    const bjpEl = document.getElementById('bjp-seats');
+    const tmcEl = document.getElementById('tmc-seats');
+    if (bjpCount !== prevBjp) { bjpEl.textContent = bjpCount; animateBump(bjpEl); }
+    if (tmcCount !== prevTmc) { tmcEl.textContent = tmcCount; animateBump(tmcEl); }
+    prevBjp = bjpCount; prevTmc = tmcCount;
+
+    document.getElementById('pc-bjp').textContent = bjpCount;
+    document.getElementById('pc-tmc').textContent = tmcCount;
+
+    // Bar
+    const bjpPct = (bjpCount / TOTAL) * 100;
+    const tmcPct = (tmcCount / TOTAL) * 100;
+    document.getElementById('bar-bjp').style.width = bjpPct + '%';
+    document.getElementById('bar-tmc').style.width = tmcPct + '%';
+    document.getElementById('bar-stat-bjp').textContent = 'BJP ' + bjpCount;
+    document.getElementById('bar-stat-tmc').textContent = 'TMC ' + tmcCount;
+    document.getElementById('bar-stat-na').textContent = 'Counting: ' + naCount;
+
+    // Commentary
+    document.getElementById('commentary').textContent = getCommentary(bjpCount, tmcCount);
+
+    // Mamata seat 159
+    const ms = seatMap[159];
+    if (ms) {
+      const pill = document.getElementById('mamata-status');
+      if (ms.party === 'AITC') {
+        pill.className = 'status-pill tmc-status';
+        pill.textContent = '✅ TMC Leading';
+      } else if (ms.party === 'BJP') {
+        pill.className = 'status-pill bjp-status';
+        pill.textContent = '⚠️ BJP Leading!';
+      } else {
+        pill.className = 'status-pill na-status';
+        pill.textContent = ms.party === 'NA' ? '⏳ Counting' : ms.party;
+      }
+    }
+
+    // Seat grid
+    const grid = document.getElementById('seat-grid');
+    grid.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    for (let i = 1; i <= TOTAL; i++) {
+      const seat = seatMap[i];
+      const dot = document.createElement('div');
+      const cls = seat ? getPartyClass(seat.party) : 'na';
+      dot.className = 'seat-dot ' + cls;
+      const label = seat?.party === 'AITC' ? 'TMC' : (seat?.party || '?');
+      dot.setAttribute('data-tip',
+        seat && seat.party !== 'NA'
+          ? `#${i}: ${seat.name} (${label})`
+          : `#${i}: Counting...`
+      );
+      if (i === 159) {
+        dot.style.outline = '2px solid rgba(33,150,243,0.9)';
+        dot.style.outlineOffset = '1px';
+      }
+      frag.appendChild(dot);
+    }
+    grid.appendChild(frag);
+
+    // Candidates list
+    const listEl = document.getElementById('candidates-list');
+    const declared = chart.filter(r => r[0] !== 'NA').sort((a, b) => a[2] - b[2]);
+
+    if (!declared.length) {
+      listEl.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:12px;">No results declared yet. Counting in progress...</div>';
+    } else {
+      const rows = declared.map(([party, , seatNo, name]) => {
+        const isMamata = seatNo === 159;
+        const cls = getPartyClass(party);
+        const partyLabel = party === 'AITC' ? 'AITC (TMC)' : party;
+        return `<div class="candidate-row${isMamata ? ' mamata-row' : ''}">
+          <div class="cand-num">#${seatNo}</div>
+          <div class="cand-info">
+            <div class="cand-name">${name}${isMamata ? ' 👑' : ''}</div>
+            <div class="cand-party">${partyLabel} · Seat ${seatNo}</div>
+          </div>
+          <span class="cand-badge ${cls === 'other' ? 'other' : cls}">${party}</span>
+        </div>`;
+      });
+      listEl.innerHTML = rows.join('');
+    }
+
+    // Timestamp
+    document.getElementById('last-updated').textContent =
+      new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    document.getElementById('loading-overlay').style.display = 'none';
+
+    // Victory check
+    checkVictory(bjpCount, tmcCount);
+  }
+
+  // ── VICTORY SCREEN ──
+  let victoryShown = false;
+
+  const BJP_TAGLINES = [
+    "🪷 The Lotus blooms in Bengal! Modi wave sweeps West Bengal!",
+    "🦁 Saffron sunrise over Kolkata — BJP makes history!",
+    "🇮🇳 Jai Sri Ram! Bengal has spoken — BJP wins!"
+  ];
+
+  const TMC_TAGLINES = [
+    "🐯 Khela Hobey — and Didi WON it! Bengal belongs to Mamata!",
+    "👑 The Queen of Bengal reigns again! TMC dominates!",
+    "🌺 Bangla Nijer Meyeke Chay — and Bengal chose her!"
+  ];
+
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function spawnConfetti(container, color1, color2) {
+    const COLORS = [color1, color2, '#fff', '#FFD700', '#FF69B4', '#00FFAA'];
+    for (let i = 0; i < 80; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'conf-dot';
+      const left  = Math.random() * 100;
+      const dx    = (Math.random() - 0.5) * 200;
+      const dur   = (1.8 + Math.random() * 2) + 's';
+      const delay = (Math.random() * 1.5) + 's';
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      Object.assign(dot.style, {
+        left: left + 'vw',
+        background: color,
+        '--dx': dx + 'px',
+        '--dur': dur,
+        '--delay': delay,
+        width:  (6 + Math.random() * 8) + 'px',
+        height: (6 + Math.random() * 8) + 'px',
+        borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+      });
+      container.appendChild(dot);
+    }
+  }
+
+  function checkVictory(bjp, tmc) {
+    if (victoryShown) return;
+    const winner = bjp >= 148 ? 'bjp' : tmc >= 148 ? 'tmc' : null;
+    if (!winner) return;
+    victoryShown = true;
+
+    const isBjp   = winner === 'bjp';
+    const seats    = isBjp ? bjp : tmc;
+    const screen   = document.getElementById('victory-screen');
+    const fw       = document.getElementById('victory-fireworks');
+
+    document.getElementById('v-stamp').className  = 'victory-stamp ' + winner;
+    document.getElementById('v-photo').src         = isBjp ? 'modi.jpeg' : 'mamta.jpeg';
+    document.getElementById('v-photo').className   = 'victory-photo ' + winner;
+    document.getElementById('v-name').textContent  = isBjp ? 'Narendra Modi' : 'Mamata Banerjee';
+    document.getElementById('v-party').textContent = isBjp ? 'BJP' : 'AITC / TMC';
+    document.getElementById('v-party').className   = 'victory-party ' + winner;
+    document.getElementById('v-seats-num').textContent  = seats + ' / 294';
+    document.getElementById('v-seats-num').className    = winner;
+    document.getElementById('v-tagline').textContent    = pick(isBjp ? BJP_TAGLINES : TMC_TAGLINES);
+
+    screen.className = 'victory-screen show ' + winner + '-win';
+    screen.classList.add('show');
+
+    spawnConfetti(fw, isBjp ? '#FF6B00' : '#2196F3', isBjp ? '#FFD700' : '#00BFFF');
+  }
+
+  function closeVictory() {
+    document.getElementById('victory-screen').classList.remove('show');
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('loading-overlay');
+    el.className = 'status-overlay error';
+    el.innerHTML = `
+      <p>⚠️ ${msg}</p>
+      <p>CORS may be blocking the request. Try opening via a local server or browser extension.</p>
+      <button class="retry-btn" onclick="fetchAndRefresh()">🔄 Retry</button>`;
+  }
+
+  async function fetchData() {
+    const res = await fetch(API_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    updateUI(data);
+  }
+
+  function startCountdown() {
+    clearInterval(countdownTimer);
+    countdownVal = 30;
+    const el = document.getElementById('countdown');
+    el.textContent = countdownVal;
+    countdownTimer = setInterval(() => {
+      countdownVal--;
+      el.textContent = countdownVal;
+      if (countdownVal <= 0) {
+        clearInterval(countdownTimer);
+        fetchAndRefresh();
+      }
+    }, 1000);
+  }
+
+  async function fetchAndRefresh() {
+    try {
+      await fetchData();
+    } catch (err) {
+      console.error(err);
+      const overlay = document.getElementById('loading-overlay');
+      if (overlay.style.display !== 'none') showError('Could not fetch live results.');
+    }
+    startCountdown();
+  }
+
+  fetchAndRefresh();
+</script>
+</body>
+</html>
