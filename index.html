@@ -1097,7 +1097,8 @@
     <div class="fighter-name bjp">Narendra<br>Modi</div>
     <div class="fighter-party">BJP</div>
     <div class="fighter-seats bjp" id="bjp-seats">—</div>
-    <div class="fighter-label">LEADING</div>
+    <div class="fighter-label">WON</div>
+    <div class="fighter-label" id="arena-lead-bjp" style="font-size:0.85em;opacity:0.7;margin-top:2px">Leading: —</div>
   </div>
 
   <div class="vs-divider">
@@ -1113,7 +1114,8 @@
     <div class="fighter-name tmc">Mamata<br>Banerjee</div>
     <div class="fighter-party">AITC / TMC</div>
     <div class="fighter-seats tmc" id="tmc-seats">—</div>
-    <div class="fighter-label">LEADING</div>
+    <div class="fighter-label">WON</div>
+    <div class="fighter-label" id="arena-lead-tmc" style="font-size:0.85em;opacity:0.7;margin-top:2px">Leading: —</div>
   </div>
 </div>
 
@@ -1568,11 +1570,15 @@
       document.getElementById('lead-bjp-sub').textContent = 'Leading: ' + bjpLead;
       document.getElementById('lead-tmc-sub').textContent = 'Leading: ' + tmcLead;
 
-      // Update big arena numbers to show leading only
+      // Update big arena numbers to show won + leading sub
       const bjpEl = document.getElementById('bjp-seats');
       const tmcEl = document.getElementById('tmc-seats');
-      if (bjpEl) bjpEl.textContent = bjpLead;
-      if (tmcEl) tmcEl.textContent = tmcLead;
+      if (bjpEl) bjpEl.textContent = bjpWon;
+      if (tmcEl) tmcEl.textContent = tmcWon;
+      const alBjp = document.getElementById('arena-lead-bjp');
+      const alTmc = document.getElementById('arena-lead-tmc');
+      if (alBjp) alBjp.textContent = 'Leading: ' + bjpLead;
+      if (alTmc) alTmc.textContent = 'Leading: ' + tmcLead;
 
       // Party tally chips
       document.getElementById('chip-won-bjp').textContent  = '✓ Won: ' + bjpWon;
