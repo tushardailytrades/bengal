@@ -1,0 +1,1 @@
+window.OR_KEY = 'YOUR_OPENROUTER_KEY_HERE';

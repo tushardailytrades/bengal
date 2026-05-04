@@ -1135,6 +1135,7 @@
   Auto-refreshes every 30 seconds
 </footer>
 
+<script src="config.js"></script>
 <script>
   const API_URL = 'https://results.eci.gov.in/ResultAcGenMay2026/election-json-S25-live.json';
 
@@ -1157,7 +1158,7 @@
   modiAudio.addEventListener('ended', () => modiAvatar.classList.remove('playing'));
   const TOTAL = 294;
 
-  const OR_KEY = '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';
+  const OR_KEY = window.OR_KEY || '';
 
   const FALLBACK = {
     bjpLead:  "🔱 The lotus is blooming in Bengal! Modi wave hitting hard! 🌊",
