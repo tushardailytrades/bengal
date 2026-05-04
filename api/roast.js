@@ -3,7 +3,22 @@ export default async function handler(req, res) {
 
   const { loser, loserSeats, winnerSeats, winner } = req.body;
 
-  const prompt = `West Bengal 2026 elections live count: ${winner} has ${winnerSeats} seats, ${loser} has ${loserSeats} seats. Write ONE brutally savage, funny, short roast (1-2 sentences max) mocking ${loser} for losing so badly. Write it in Hinglish (mix of Hindi and English, like how Indian people text — e.g. "yaar", "bhai", "kya kar raha hai", "toh kya hua", "teri toh", etc). Be ruthless, street-level savage, and hilarious. Use relevant emojis. Only output the roast, nothing else.`;
+const prompt = `West Bengal 2026 election live count:
+${winner}: ${winnerSeats} seats
+${loser}: ${loserSeats} seats
+
+Write EXACTLY ONE savage roast targeting ${loser} for losing badly.
+
+Rules:
+- Hinglish only (natural mix like "bhai", "yaar", "kya scene hai", etc.)
+- Max 2 sentences (prefer 1 strong punchline)
+- Street-style, meme-worthy, ruthless but funny (not political analysis)
+- No explanations, no context, no hashtags
+- Include 1–2 fitting emojis only
+- Make it sound like a viral WhatsApp roast
+- Avoid repetition or generic insults — be creative and specific to the situation
+
+Output ONLY the roast.`;
 
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
