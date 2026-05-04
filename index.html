@@ -1192,8 +1192,8 @@
     let bjpCount = 0, tmcCount = 0, naCount = 0;
     const seatMap = {};
 
-    chart.forEach(([party, , seatNo, name]) => {
-      seatMap[seatNo] = { party, name };
+    chart.forEach(([party, status, seatNo, name]) => {
+      seatMap[seatNo] = { party, status, name };
       if (party === 'BJP')       bjpCount++;
       else if (party === 'AITC') tmcCount++;
       else if (party === 'NA')   naCount++;
@@ -1289,8 +1289,8 @@
 
     document.getElementById('loading-overlay').style.display = 'none';
 
-    // Victory check
-    checkVictory(bjpCount, tmcCount);
+    // Victory check — only when all 294 seats are declared (no seats still counting)
+    if (naCount === 0) checkVictory(bjpCount, tmcCount);
   }
 
   // ── VICTORY SCREEN ──
