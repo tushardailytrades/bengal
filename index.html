@@ -1097,7 +1097,7 @@
     <div class="fighter-name bjp">Narendra<br>Modi</div>
     <div class="fighter-party">BJP</div>
     <div class="fighter-seats bjp" id="bjp-seats">—</div>
-    <div class="fighter-label">WON + LEADING</div>
+    <div class="fighter-label">LEADING</div>
   </div>
 
   <div class="vs-divider">
@@ -1113,7 +1113,7 @@
     <div class="fighter-name tmc">Mamata<br>Banerjee</div>
     <div class="fighter-party">AITC / TMC</div>
     <div class="fighter-seats tmc" id="tmc-seats">—</div>
-    <div class="fighter-label">WON + LEADING</div>
+    <div class="fighter-label">LEADING</div>
   </div>
 </div>
 
@@ -1567,6 +1567,12 @@
       document.getElementById('won-tmc').textContent     = tmcWon;
       document.getElementById('lead-bjp-sub').textContent = 'Leading: ' + bjpLead;
       document.getElementById('lead-tmc-sub').textContent = 'Leading: ' + tmcLead;
+
+      // Update big arena numbers to show leading only
+      const bjpEl = document.getElementById('bjp-seats');
+      const tmcEl = document.getElementById('tmc-seats');
+      if (bjpEl) bjpEl.textContent = bjpLead;
+      if (tmcEl) tmcEl.textContent = tmcLead;
 
       // Party tally chips
       document.getElementById('chip-won-bjp').textContent  = '✓ Won: ' + bjpWon;
