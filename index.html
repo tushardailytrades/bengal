@@ -1002,6 +1002,8 @@
   <p>Fetching live results from ECI...</p>
 </div>
 
+<div id="debug-bar" style="background:#ff0;color:#000;font-size:13px;font-weight:700;text-align:center;padding:6px;position:fixed;top:0;left:0;right:0;z-index:9999;">⏳ Waiting for JS...</div>
+
 <!-- HEADER -->
 <header>
   <div class="live-badge"><span class="live-dot"></span>LIVE COUNTING</div>
@@ -1137,6 +1139,11 @@
 
 <script src="config.js"></script>
 <script>
+  console.log("hellooooooo")
+  function dbg(msg) { document.getElementById('debug-bar').textContent = '🔧 ' + msg; }
+  dbg('JS running. OR_KEY: ' + (window.OR_KEY ? 'YES ✅' : 'NO ❌'));
+</script>
+<script>
   const API_URL = 'https://results.eci.gov.in/ResultAcGenMay2026/election-json-S25-live.json';
 
   // ── Modi audio ──
@@ -1158,8 +1165,6 @@
   modiAudio.addEventListener('ended', () => modiAvatar.classList.remove('playing'));
   const TOTAL = 294;
 
-  const OR_KEY = window.OR_KEY || '';
-
   const FALLBACK = {
     bjpLead:  "🔱 The lotus is blooming in Bengal! Modi wave hitting hard! 🌊",
     tmcLead:  "🐯 Khela hobey! Mamata is dominating — BJP might need a tissue! 😭",
@@ -1179,39 +1184,35 @@
   async function fetchRoast(loser, loserSeats, winnerSeats, winner) {
     if (roastFetching) return;
     roastFetching = true;
-    const prompt = `West Bengal 2026 elections live count: ${winner} has ${winnerSeats} seats, ${loser} has ${loserSeats} seats. Write ONE brutally savage, funny, short roast (1-2 sentences max) mocking ${loser} for losing so badly. Write it in Hinglish (mix of Hindi and English, like how Indian people text — e.g. "yaar", "bhai", "kya kar raha hai", "toh kya hua", "teri toh", etc). Be ruthless, street-level savage, and hilarious. Use relevant emojis. Only output the roast, nothing else.`;
     try {
-      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      dbg('Fetching roast...');
+      const res = await fetch('/api/roast', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${OR_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'meta-llama/llama-3.3-70b-instruct',
-          messages: [{ role: 'user', content: prompt }],
-          max_tokens: 80
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ loser, loserSeats, winnerSeats, winner })
       });
       const data = await res.json();
-      const text = data?.choices?.[0]?.message?.content?.trim();
-      if (text) {
-        cachedRoast = text;
-        document.getElementById('commentary').textContent = text;
+      if (data.roast) {
+        cachedRoast = data.roast;
+        document.getElementById('commentary').textContent = data.roast;
+        dbg('Roast loaded ✅');
+      } else {
+        dbg('Roast error: ' + JSON.stringify(data).slice(0, 120));
       }
-    } catch(e) { /* keep cached */ }
+    } catch(e) { dbg('Roast fetch failed: ' + e.message); }
     roastFetching = false;
   }
 
   function getCommentary(bjp, tmc) {
-    if (bjp + tmc < 10) return FALLBACK.counting;
+    if (bjp + tmc === 0) return FALLBACK.counting;
     const diff = bjp - tmc;
-    if (Math.abs(diff) <= 5) return FALLBACK.tied;
+    if (diff === 0) return FALLBACK.tied;
 
-    const state = diff > 5 ? `bjp-${bjp}-${tmc}` : `tmc-${bjp}-${tmc}`;
+    const leader = diff > 0 ? 'bjp' : 'tmc';
+    const state = `${leader}-${bjp}-${tmc}`;
     if (state !== lastRoastState) {
       lastRoastState = state;
-      if (diff > 5) fetchRoast('TMC', tmc, bjp, 'BJP');
+      if (diff > 0) fetchRoast('TMC', tmc, bjp, 'BJP');
       else          fetchRoast('BJP', bjp, tmc, 'TMC');
     }
     return cachedRoast;
@@ -1233,7 +1234,7 @@
 
   function updateUI(data) {
     const s25 = data['S25'];
-    if (!s25) return;
+    if (!s25) { console.warn('No S25 key in data', data); return; }
 
     const chart = s25.chartData;
     let bjpCount = 0, tmcCount = 0, naCount = 0;
@@ -1245,6 +1246,7 @@
       else if (party === 'AITC') tmcCount++;
       else if (party === 'NA')   naCount++;
     });
+    dbg(`BJP: ${bjpCount} | TMC: ${tmcCount} | NA: ${naCount} | OR_KEY: ${window.OR_KEY ? 'YES' : 'NO'}`);
 
     // Seat counters
     const bjpEl = document.getElementById('bjp-seats');
@@ -1406,11 +1408,25 @@
       <button class="retry-btn" onclick="fetchAndRefresh()">🔄 Retry</button>`;
   }
 
+  function makeDemoData(bjp, tmc) {
+    const chart = [];
+    let seat = 1;
+    for (let i = 0; i < bjp; i++) chart.push(['BJP', 'W', seat++, 'BJP Candidate ' + seat]);
+    for (let i = 0; i < tmc; i++) chart.push(['AITC', 'W', seat++, 'TMC Candidate ' + seat]);
+    for (; seat <= 294; seat++) chart.push(['NA', 'C', seat, 'Counting...']);
+    return { S25: { chartData: chart } };
+  }
+
   async function fetchData() {
-    const res = await fetch(API_URL, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    updateUI(data);
+    try {
+      const res = await fetch(API_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      updateUI(data);
+    } catch(e) {
+      dbg('ECI failed (' + e.message + ') — loading demo data BJP:168 TMC:120');
+      updateUI(makeDemoData(168, 120));
+    }
   }
 
   function startCountdown() {
